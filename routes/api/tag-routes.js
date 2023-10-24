@@ -20,7 +20,7 @@ router.get('/:id', async (req, res) => {
       include: Product, // Include associated Products
     });
     if (!tag) {
-      res.status(404).json({ message: 'Tag not found' });
+      res.status(404).json({ message: 'No tag found with this id!' });
       return;
     }
     res.status(200).json(tag);
@@ -44,6 +44,8 @@ router.put('/:id', async (req, res) => {
   try {
     const updatedTag = await Tag.update(req.body, {
       where: { id: req.params.id },
+      returning: true,
+      plain: true,
     });
     res.status(200).json(updatedTag);
   } catch (err) {
@@ -56,9 +58,11 @@ router.delete('/:id', async (req, res) => {
   try {
     const deletedTag = await Tag.destroy({
       where: { id: req.params.id },
+      returning: true,
+      plain: true,
     });
     if (!deletedTag) {
-      res.status(404).json({ message: 'Tag not found' });
+      res.status(404).json({ message: 'No tag found with this id!' });
       return;
     }
     res.status(200).json(deletedTag);
